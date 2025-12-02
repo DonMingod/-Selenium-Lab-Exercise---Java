@@ -15,7 +15,7 @@ public class LoginPageTest {
 
     private LoginPage loginPage;
 
-    private String validUsername = "testuser";
+    private String validUsername = "practice";
     private String validPassword = "SuperSecretPassword!";
 
     @BeforeEach
@@ -29,10 +29,10 @@ public class LoginPageTest {
     @Test
     void loginWithInvalidCredentials(){
         loginPage.open();
-        loginPage.login("usuario_invaldo", "clave_erronea");
+        loginPage.login("invalidUser1", "invalidPass");
 
         String mensaje = loginPage.getMessage();
-        Assertions.assertTrue(mensaje.contains("your username is invalid!"));
+        Assertions.assertTrue(mensaje.contains("Your username is invalid!"));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class LoginPageTest {
         loginPage.login(validUsername, "invalid_password");
 
         String mensaje = loginPage.getMessage();
-        Assertions.assertTrue(mensaje.contains("your password is invalid!"));
+        Assertions.assertTrue(mensaje.contains("Your password is invalid!"));
     }
 
     @AfterEach

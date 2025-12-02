@@ -5,22 +5,25 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
 public class FormPageValidationTest {
 
     private WebDriver driver;
+
     private FormPage formPage;
 
     @BeforeAll
-    void setupClass(){
+    void setup() {
         WebDriverManager.chromedriver().setup();
     }
 
     @BeforeEach
-    void setup(){
+    void setUp() {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         formPage = new FormPage(driver);
@@ -29,47 +32,35 @@ public class FormPageValidationTest {
     @Test
     void testFormularioCompleto(){
         formPage.abrir();
-        formPage.llenarFormulario(
-                "Carlos",
-                "9011471666",
+        formPage.llenarFormulario("John",
+                "012-3456789",
                 "cash on delivery",
-                "20/04/2019"
-        );
+                "2024-04-20");
+
         formPage.enviar();
 
         String mensaje = formPage.obtenerMensajeExito();
-        Assertions.assertTrue(mensaje.contains("Thank you for your order!"));
+        assertTrue(mensaje.contains("Thank you for validating your ticket"));
     }
 
     @Test
-    void testFormularioContactoIncorrecto(){
+    void testContactFormBad() {
         formPage.abrir();
-
-        RuntimeException exception = assertThrows(RuntimeException.class,() ->{
-            formPage.llenarFormulario(
-                    "Carlos",
-                    "901147166",
-                    "cash on delivery",
-                    "20/04/2019"
-            );
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            formPage.llenarFormulario("Carlos", "343-3232", "cash on delivery", "2024-04-20");
         });
-        assertEquals("Error, el contacto debe ser un telefono valido", exception.getMessage());
+        assertEquals("Error, el contacto no cumple debe ser telefono", exception.getMessage());
     }
 
     @Test
-    void testFormularioDiaIncorrecto(){
+    void testDateFormBad() {
         formPage.abrir();
-
-        RuntimeException exception = assertThrows(RuntimeException.class,() ->{
-            formPage.llenarFormulario(
-                    "Carlos",
-                    "9011471666",
-                    "cash on delivery",
-                    "32/04/2019"
-            );
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            formPage.llenarFormulario("Carlos", "012-3456789", "cash on delivery", "20/04/0000");
         });
-        assertEquals("Error, la fecha ingresada no es valida", exception.getMessage());
+        assertEquals("Formato de fecha incorrecto", exception.getMessage());
     }
+
 
     @AfterEach
     void teardown(){
@@ -77,13 +68,5 @@ public class FormPageValidationTest {
             driver.quit();
         }
     }
-
-
-
-
-
-
-
-
 
 }

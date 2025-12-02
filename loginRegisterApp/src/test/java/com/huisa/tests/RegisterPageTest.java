@@ -31,10 +31,10 @@ public class RegisterPageTest {
       @Test
      void registerSuccess(){
           registerPage.open();
-          registerPage.register("auronplay", "password123", "password123");
+          registerPage.register("auronplay2322", "password123", "password123");
 
           String mensaje = registerPage.getMessage();
-          Assertions.assertTrue(mensaje.contains("Succesfully registered"));
+          Assertions.assertTrue(mensaje.contains("Successfully registered, you can log in now."));
       }
 
       @Test
@@ -43,7 +43,7 @@ public class RegisterPageTest {
           registerPage.register("ar","test", "test");
 
           String mensaje = registerPage.getMessage();
-            Assertions.assertTrue(mensaje.contains("The username must be at least 3 characters long"));
+            Assertions.assertTrue(mensaje.contains("Username must be at least 3 characters long."));
       }
 
       @Test
@@ -52,7 +52,7 @@ public class RegisterPageTest {
           registerPage.register("johan", "123456", "234567");
 
           String mensaje = registerPage.getMessage();
-          Assertions.assertTrue(mensaje.contains("The passwords do not match"));
+          Assertions.assertTrue(mensaje.contains("Passwords do not match."));
       }
 
       @Test
@@ -61,7 +61,7 @@ public class RegisterPageTest {
           registerPage.register("rubios","12","12");
 
           String mensaje = registerPage.getMessage();
-            Assertions.assertTrue(mensaje.contains("The password must be at least 3 characters long"));
+            Assertions.assertTrue(mensaje.contains("Password must be at least 4 characters long."));
       }
 
       @AfterEach
@@ -70,8 +70,5 @@ public class RegisterPageTest {
               driver.quit();
           }
       }
-
-
-
 
 }
